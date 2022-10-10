@@ -17,6 +17,8 @@ Import-Module powerenum.ps1
 ```posh
 # Retrieve some initial information about the domain including domain info and connected systems
 Get-Basics 
+# Get-Basics has 3 optional arguments
+Get-Basics -IPAddress:$true -DomainInformation:$true -ConnectedSystems:$true
 # Find listening ports and the service running on that port
 Get-Listening
 
