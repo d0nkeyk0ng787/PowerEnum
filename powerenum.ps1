@@ -9,7 +9,7 @@ Find information about a domain including:
 #>
 
 function Get-Basics{
-
+    # Define optional parameters
     param(
         [Parameter(Mandatory = $false)] [bool[]]$IPAddress,
         [Parameter(Mandatory = $false)] [bool[]]$DomainInformation,
