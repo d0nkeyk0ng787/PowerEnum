@@ -120,7 +120,7 @@ function Get-NoPass{
 
 function Get-History{
     # Ask for which user to get the powershell history for
-    Write-Host "Account name for user you want powershell history for" -NowNewLine -ForegroundColor Black -Backgroundcolor Green
+    Write-Host "Account name for user you want powershell history for: " -ForegroundColor Black -Backgroundcolor Green -NoNewLine
     $Username = Read-Host
     Get-Content -Path C:\Users\$Username\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
 }
