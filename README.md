@@ -5,6 +5,12 @@ Powershell script for enumerating Active Directory. Nothing new or ground breaki
 
 Download the **powerenum.ps1** script and get it onto your target system. This can be done multiple ways which you can figure out for yourself.
 
+Once on the system you will need to import the script to be able to use it.
+
+```posh
+Import-Module powerenum.ps1
+```
+
 ### Commands
 
 ##### Domain Information Gathering
