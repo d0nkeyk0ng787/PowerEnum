@@ -70,7 +70,7 @@ function Get-Admins{
     # Retrieve Domain Admins
     $DAs = Get-ADGroupMember -Identity "Domain Admins" | Select-Object -Property Name, SamAccountName, SID | Out-String
     # Retrieve enterprise admins
-    $EAs = Get-ADGroupMember -Identity "Enterprise Admins" | Select-Object -Property Name, SamAccountName, SID | Out-Strings
+    $EAs = Get-ADGroupMember -Identity "Enterprise Admins" | Select-Object -Property Name, SamAccountName, SID | Out-String
     # Prints
     Write-Host "Administrators" -ForegroundColor Black -Backgroundcolor Magenta
     Write-Host $ATs
@@ -90,7 +90,7 @@ function Get-OUs{
 
 function Get-AllGroups{
     # Get groups
-    $Groups = Get-ADGroup -Filter * -Properties * | Select-Object SamAccountName, Member
+    $Groups = Get-ADGroup -Filter * -Properties * | Select-Object SamAccountName, Member | Where-Object Member -ne "" | Out-String
     # Print
     Write-Host "All groups" -ForegroundColor Black -Backgroundcolor Magenta
     Write-Host $Groups
