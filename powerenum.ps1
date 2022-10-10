@@ -116,3 +116,4 @@ function Get-NoPass{
     #Print
     Write-Host "Accounts that don't require a password" -ForegroundColor Black -Backgroundcolor Red
     Write-Host $NoPass
+}
