@@ -1,0 +1,5 @@
+Get console history
+
+function Get-History{
+    
+}
