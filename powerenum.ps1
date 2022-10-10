@@ -117,3 +117,9 @@ function Get-NoPass{
     Write-Host "Accounts that don't require a password" -ForegroundColor Black -Backgroundcolor Red
     Write-Host $NoPass
 }
+
+function Get-History{
+    # Ask for which user to get the powershell history for
+    $Username = Read-Host -Prompt "Account name for user you want powershell history for"
+    Get-Content -Path C:\Users\$Username\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
+}
