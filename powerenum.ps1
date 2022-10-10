@@ -92,11 +92,27 @@ function Get-AllGroups{
     # Get groups
     $Groups = Get-ADGroup -Filter * -Properties * | Select-Object SamAccountName, Member | Where-Object Member -ne "" | Out-String
     # Print
-    Write-Host "All groups" -ForegroundColor Black -Backgroundcolor Magenta
+    Write-Host "All Groups" -ForegroundColor Black -Backgroundcolor Magenta
     Write-Host $Groups
 }
 
 
 function Get-AllUsers{
-    Return 0
+    # TODO - This function needs to be modified massively to accomodate a more granular search of users
+    # Get all users
+    $Users = Get-ADUser -Filter * -Properties * | Select-Object Name, DistinguishedName, SamAccountName, PrimaryGroup | Out-String 
+    #Print
+    Write-Host "Domain Users" -ForegroundColor Black -Backgroundcolor Magenta
+    Write-Host $Users 
+
 }   
+
+<# 
+Tools for finding potential attack vectors or further access to the network
+#>
+function Get-NoPass{
+    # Get users that don't require a password
+    $NoPass = Get-ADUser -Filter * -Properties * | Where-Object PasswordNotRequired -eq True | Select-Object Name, SamAccountName, DistinguishedName, PasswordNotRequired | Out-String
+    #Print
+    Write-Host "Accounts that don't require a password" -ForegroundColor Black -Backgroundcolor Red
+    Write-Host $NoPass
