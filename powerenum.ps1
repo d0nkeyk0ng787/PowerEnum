@@ -9,19 +9,39 @@ Find information about a domain including:
 #>
 
 function Get-Basics{
+
+    param(
+        [Parameter(Mandatory = $false)] [bool[]]$IPAddress,
+        [Parameter(Mandatory = $false)] [bool[]]$DomainInformation,
+        [Parameter(Mandatory = $false)] [bool[]]$ConnectSystems
+    )
     # Get IPs
     $IPs = Get-NetIPAddress | Select-Object IPAddress, InterfaceAlias | Out-String
     # Get domain information
-    $DomainInfo = Get-ComputerInfo | Select-Object CsDomain, CsName, WindowsProductName, OsServerLevel, CsDomainRole | Out-String
+    $DomainInfo = Get-ComputerInfo | Select-Object CsDomain, CsName, WindowsProductName, OsServerLevel, CsDomainRole | Format-Table | Out-String
     # Get connected systems
     $ConnectedSys = Get-ADComputer -Filter * -Properties * | Select-Object Name, IPv4Address, LastLogonDate, Enabled | Out-String
     # Prints
-    Write-Host "IP Address" -ForegroundColor Black -Backgroundcolor Magenta
-    Write-Host $IPs
-    Write-Host "Domain Information" -ForegroundColor Black -Backgroundcolor Magenta
-    Write-Host $DomainInfo
-    Write-Host "Connected Machines" -ForegroundColor Black -Backgroundcolor Magenta
-    Write-Host $ConnectedSys
+    if ($IPAddress -eq $true){
+        Write-Host "IP Address" -ForegroundColor Black -Backgroundcolor Magenta
+        Write-Host $IPs
+    }
+    if ($DomainInformation -eq $true){
+        Write-Host "Domain Information" -ForegroundColor Black -Backgroundcolor Magenta
+        Write-Host $DomainInfo
+    }
+    if ($ConnectSystems -eq $true){
+        Write-Host "Connected Machines" -ForegroundColor Black -Backgroundcolor Magenta
+        Write-Host $ConnectedSys
+    }
+    if (($IPAddress -ne $true) -and ($DomainInformation -ne $true) -and ($ConnectSystems -ne $true)){
+        Write-Host "IP Address" -ForegroundColor Black -Backgroundcolor Magenta
+        Write-Host $IPs
+        Write-Host "Domain Information" -ForegroundColor Black -Backgroundcolor Magenta
+        Write-Host $DomainInfo
+        Write-Host "Connected Machines" -ForegroundColor Black -Backgroundcolor Magenta
+        Write-Host $ConnectedSys
+    }
 }
 
 
