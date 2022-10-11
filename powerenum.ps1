@@ -132,10 +132,10 @@ function Disable-Defender{
         # Check if defender is enabled
         $Defenderon = (Get-MpComputerStatus).AntivirusEnabled
         if($Defenderon -eq $true){
-            Write-Host "Windows defender is active, attempting to disable defender!" -ForegroundColor Black -Backgroundcolor Green
+            Write-Host "Windows defender is active, attempting to disable defender!" -ForegroundColor Black -Backgroundcolor Red
         }
         else{
-            Write-Host "Windows defender is inactive, no further action required!" -ForegroundColor Black -Backgroundcolor Red
+            Write-Host "Windows defender is inactive, no further action required!" -ForegroundColor Black -Backgroundcolor Green
             break
         }
 
@@ -153,7 +153,7 @@ function Disable-Defender{
         $params = @{
             DisableRealtimeMonitoring = $true
             DisableIOAVProtection = $true
-            DisableBehaviourMonitoring = $true
+            DisableBehaviorMonitoring = $true
             DisableBlockAtFirstSeen = $true
             DisableEmailScanning = $true
             DisableScriptScanning = $true
@@ -163,7 +163,7 @@ function Disable-Defender{
 
         # Add a folder exclusion
         $Path = "C:\Windows\Temp"
-        Add-MpPreference -ExclusionPath 
+        Add-MpPreference -ExclusionPath $Path
 
         # Print completed
         Write-Host "Windows defender disabled. Exclusion path set to $Path!" -ForegroundColor Black -Backgroundcolor Green
@@ -213,6 +213,6 @@ function Disable-UAC{
         Write-Host "Unable to disable UAC! Insufficient permissions." -ForegroundColor Black -Backgroundcolor Red
     }
     else{
-        Write-Host "UAC disabled!" -ForegroundColor Black -ForegroundColor Green
+        Write-Host "UAC disabled!" -ForegroundColor Black -Backgroundcolor Green
     }
 }
