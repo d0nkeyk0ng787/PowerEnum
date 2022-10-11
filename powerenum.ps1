@@ -234,6 +234,27 @@ function Get-Passwords{
     param(
         [Parameter(Mandatory = $true)] [string[]]$Path
     )
-    # Find passwords by searching the current directory
+    # Find passwords by searching the specified directory
     ls -Path $Path -R | select-string -Pattern password, secret, credential
+}
+
+function Get-AlwaysInstallElevated{
+    $AIE1 = Get-ItemProperty -Path HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer -Name AlwaysInstallElevated -ErrorAction SilentlyContinue -ErrorVariable HKLMError
+    $AIE2 = Get-ItemProperty -Path HKCU:\SOFTWARE\Policies\Microsoft\Windows\Installer -Name AlwaysInstallElevated -ErrorAction SilentlyContinue -ErrorVariable HKCUError
+
+    $AIE1 = $AIE1.AlwaysInstallElevated
+    $AIE2 = $AIE2.AlwaysInstallElevated
+
+    if($HKLMError){
+        Write-Host "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer AlwaysInstallElevated is not set!" -ForegroundColor Black -Backgroundcolor Red
+    }
+    else{
+        Write-Host "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Installer AlwaysInstallElevated is set to $AIE1" -ForegroundColor Black -Backgroundcolor Green
+    }
+    if($HKCUError){
+        Write-Host "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Installer AlwaysInstallElevated is not set!" -ForegroundColor Black -Backgroundcolor Red
+    }
+    else{
+        Write-Host "HKCU:\SOFTWARE\Policies\Microsoft\Windows\Installer AlwaysInstallElevated is set to $AIE2" -ForegroundColor Black -Backgroundcolor Green
+    }
 }
