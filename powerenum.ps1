@@ -216,3 +216,24 @@ function Disable-UAC{
         Write-Host "UAC disabled!" -ForegroundColor Black -Backgroundcolor Green
     }
 }
+
+function Disable-Firewall{
+    Write-Host "Disabling firewall requires administrative privileges!" -ForegroundColor Yellow -Backgroundcolor Black
+    Set-NetFirewallProfile -Profile Domain,Public,Private -Enabled False -EA SilentlyContinue -ErrorVariable FirewallError
+
+    if($FirewallError){
+        Write-Host "Unable to disable firewall! Insufficient permissions." -ForegroundColor Black -Backgroundcolor Red
+    }
+    else{
+        Write-Host "Firewall disabled!" -ForegroundColor Black -Backgroundcolor Green
+    }
+}
+
+function Get-Passwords{
+
+    param(
+        [Parameter(Mandatory = $true)] [string[]]$Path
+    )
+    # Find passwords by searching the current directory
+    ls -Path $Path -R | select-string -Pattern password, secret, credential
+}
