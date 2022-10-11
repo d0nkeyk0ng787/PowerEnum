@@ -39,10 +39,23 @@ Get-Listening
 
 # Retrieve all the admins in the domain
 Get-Admins
-# Retrieve all OUs in the system
+# Retrieve all OUs in the domain
 Get-OUs
 # Retrieve all groups in the domain
 Get-AllGroups
 # Retrieve all users in the domain
 Get-AllUsers
+
+# Retrieve all users who don't require a password
+Get-NoPass
+# Retrieve console history for a specified user
+Get-History
+# Disable Windows defender
+Disable-Defender
+# Add a folder to exclude from defender scans
+Add-DefenderExclusion -Path
+# Disable tamper protection on the system
+Disable-TamperProtection
+# Disable UAC
+Disable-UAC
 ```
