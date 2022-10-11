@@ -53,7 +53,7 @@ Get-History
 # Disable Windows defender
 Disable-Defender
 # Add a folder to exclude from defender scans
-Add-DefenderExclusion -Path
+Add-DefenderExclusion -Path <PATH>
 # Disable tamper protection on the system
 Disable-TamperProtection
 # Disable UAC
