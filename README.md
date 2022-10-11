@@ -11,6 +11,21 @@ Once on the system you will need to import the script to be able to use it.
 Import-Module powerenum.ps1
 ```
 
+You will likely need to change the execution policy to run this script:
+
+```posh
+Set-ExecutionPolicy Bypass
+```
+
+If this does not work, you can run the following code to disable execution policy:
+
+```posh
+# Create the function
+function Disable-ExecutionPolicy {($ctx = $executioncontext.gettype().getfield("_context","nonpublic,instance").getvalue( $executioncontext)).gettype().getfield("_authorizationManager","nonpublic,instance").setvalue($ctx, (new-object System.Management.Automation.AuthorizationManager "Microsoft.PowerShell"))}
+# Execute the function
+Disable-ExecutionPolicy
+```
+
 ### Commands
 
 ##### Domain Information Gathering
