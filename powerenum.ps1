@@ -55,6 +55,13 @@ function Get-Listening{
     Write-Host $PortsFormatted
 }
 
+function Invoke-Ping{
+    param(
+        [Parameter(Mandatory = $true)]$IP
+    )
+    Test-NetConnection $IP
+}
+
 <#
 Find information about domain objects including
 * Admins
