@@ -58,4 +58,10 @@ Add-DefenderExclusion -Path <PATH>
 Disable-TamperProtection
 # Disable UAC
 Disable-UAC
+# Disable the firewall on the system
+Disable-Firewall
+# Attempt to find passwords in the file system
+Get-Passwords -Path <PATH>
+# See if programs are set to install as always elevated
+Get-AlwaysInstallElevated
 ```
